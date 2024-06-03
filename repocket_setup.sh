@@ -34,6 +34,21 @@ sudo docker run -d --name repocket_with_proxy \
   -e PROXY_PASSWORD=$PROXY_PASSWORD \
   repocket/repocket
 
-echo "Repocket containers have been created and started."
-echo "Container 1: No Proxy"
-echo "Container 2: With HTTP Proxy"
+# Check the status of the containers
+NO_PROXY_STATUS=$(sudo docker inspect -f '{{.State.Status}}' repocket_no_proxy)
+WITH_PROXY_STATUS=$(sudo docker inspect -f '{{.State.Status}}' repocket_with_proxy)
+
+echo "Repocket containers status:"
+echo "Container 1 (No Proxy): $NO_PROXY_STATUS"
+echo "Container 2 (With Proxy): $WITH_PROXY_STATUS"
+
+# Show logs if containers exited
+if [ "$NO_PROXY_STATUS" != "running" ]; then
+  echo "Logs for container 1 (No Proxy):"
+  sudo docker logs repocket_no_proxy
+fi
+
+if [ "$WITH_PROXY_STATUS" != "running" ]; then
+  echo "Logs for container 2 (With Proxy):"
+  sudo docker logs repocket_with_proxy
+fi
